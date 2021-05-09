@@ -11,7 +11,7 @@ type User = {
   id: number;
   name: string;
   bio: string;
-  fellowship: "fellows" | "angels" | "writers";
+  fellowship: "founders" | "angels" | "writers";
   avatar_url: string;
   projects: Project[];
 }

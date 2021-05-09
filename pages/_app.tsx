@@ -1,6 +1,7 @@
 import {ApolloClient, InMemoryCache, ApolloProvider} from '@apollo/client'
 import {createGlobalStyle, ThemeProvider} from 'styled-components'
 import type { AppProps } from 'next/app'
+import {NewsfeedQueryReturn} from './../graphql/resolvers/Query/newsfeed'
 
 export default function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -15,9 +16,34 @@ export default function MyApp({ Component, pageProps }: AppProps) {
   )
 }
 
+function mergeNewsfeedQuery(existing?: NewsfeedQueryReturn, incoming?: NewsfeedQueryReturn) {
+  if (!incoming) {
+    return existing
+  } else if (!existing) {
+    return incoming
+  } else {
+    const mergedItemList = [...existing.items, ...incoming.items]
+    const newPageInfo = incoming.pageInfo
+    return {items: mergedItemList, pageInfo: newPageInfo} 
+  }
+}
+
+const cache = new InMemoryCache({
+  typePolicies: {
+    Query: {
+      fields: {
+        newsfeed: {
+          keyArgs: ["fellowship"],
+          merge: mergeNewsfeedQuery,
+        },
+      },
+    },
+  },
+});
+
 const client = new ApolloClient({
   uri: '/api/graphql',
-  cache: new InMemoryCache(),
+  cache: cache,
 })
 
 const theme = {

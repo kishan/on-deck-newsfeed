@@ -19,9 +19,40 @@ const typeDefs = gql`
     projects: [Project!]!
   }
 
+  type Announcement {
+    id: Int!
+    fellowship: String!
+    title: String!
+    body: String!
+  }
+
+  type PageInfo {
+    hasNextPage: Boolean!
+    nextCursor: String!
+  }
+
+  type NewsfeedItem {
+    itemType: String!
+    itemId: Int!
+    title: String!
+    description: String!
+    created_ts: String!
+    fellowship: String
+    imageUrl: String
+    users: [User!]
+    projects: [Project!]
+  }
+
+  type Newsfeed {
+    pageInfo: PageInfo!
+    items: [NewsfeedItem!]!
+  }
+
   type Query {
     project(id: Int!): Project!
     user(id: Int!): User!
+    announcement(id: Int!): Announcement!
+    newsfeed(fellowship: String!, limit: Int, cursor: String): Newsfeed!
   }
 `;
 
